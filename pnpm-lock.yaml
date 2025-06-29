@@ -23,9 +23,6 @@ importers:
       fastify:
         specifier: ^5.0.0
         version: 5.0.0
-      ultraviolet-static:
-        specifier: github:titaniumnetwork-dev/Ultraviolet-Static
-        version: https://codeload.github.com/titaniumnetwork-dev/Ultraviolet-Static/tar.gz/d9a30997be87d0f25f36c85e2fc851528d8f8e23
       wisp-server-node:
         specifier: ^1.1.7
         version: 1.1.7
@@ -699,10 +696,6 @@ packages:
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
-
-  ultraviolet-static@https://codeload.github.com/titaniumnetwork-dev/Ultraviolet-Static/tar.gz/d9a30997be87d0f25f36c85e2fc851528d8f8e23:
-    resolution: {tarball: https://codeload.github.com/titaniumnetwork-dev/Ultraviolet-Static/tar.gz/d9a30997be87d0f25f36c85e2fc851528d8f8e23}
-    version: 1.0.5
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
@@ -1395,8 +1388,6 @@ snapshots:
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
-
-  ultraviolet-static@https://codeload.github.com/titaniumnetwork-dev/Ultraviolet-Static/tar.gz/d9a30997be87d0f25f36c85e2fc851528d8f8e23: {}
 
   uri-js@4.4.1:
     dependencies:
