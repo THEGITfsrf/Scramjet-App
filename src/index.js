@@ -6,7 +6,7 @@ import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 
 // static paths
-import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
+import { scramjetPath } from "@mercuryworkshop/scramjet"
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 
@@ -32,13 +32,9 @@ fastify.register(fastifyStatic, {
 	decorateReply: true,
 });
 
-fastify.get("/uv/uv.config.js", (req, res) => {
-	return res.sendFile("uv/uv.config.js", publicPath);
-});
-
 fastify.register(fastifyStatic, {
-	root: uvPath,
-	prefix: "/uv/",
+	root: scramjetPath,
+	prefix: "/scram/",
 	decorateReply: false,
 });
 
@@ -53,6 +49,10 @@ fastify.register(fastifyStatic, {
 	prefix: "/baremux/",
 	decorateReply: false,
 });
+
+fastify.setNotFoundHandler((res, reply) => {
+	return reply.code(404).type('text/html').sendFile('404.html');
+})
 
 fastify.server.on("listening", () => {
 	const address = fastify.server.address();

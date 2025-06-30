@@ -2,23 +2,35 @@
 /**
  * @type {HTMLFormElement}
  */
-const form = document.getElementById("uv-form");
+const form = document.getElementById("sj-form");
 /**
  * @type {HTMLInputElement}
  */
-const address = document.getElementById("uv-address");
+const address = document.getElementById("sj-address");
 /**
  * @type {HTMLInputElement}
  */
-const searchEngine = document.getElementById("uv-search-engine");
+const searchEngine = document.getElementById("sj-search-engine");
 /**
  * @type {HTMLParagraphElement}
  */
-const error = document.getElementById("uv-error");
+const error = document.getElementById("sj-error");
 /**
  * @type {HTMLPreElement}
  */
-const errorCode = document.getElementById("uv-error-code");
+const errorCode = document.getElementById("sj-error-code");
+
+const scramjet = new ScramjetController({
+	files: {
+		wasm: "/scram/scramjet.wasm.wasm",
+		worker: "/scram/scramjet.worker.js",
+		client: "/scram/scramjet.client.js",
+		shared: "/scram/scramjet.shared.js",
+		sync: "/scram/scramjet.sync.js",
+	},
+});
+scramjet.init();
+
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
 
 form.addEventListener("submit", async (event) => {
@@ -34,7 +46,7 @@ form.addEventListener("submit", async (event) => {
 
 	const url = search(address.value, searchEngine.value);
 
-	let frame = document.getElementById("uv-frame");
+	let frame = document.getElementById("sj-frame");
 	frame.style.display = "block";
 	let wispUrl =
 		(location.protocol === "https:" ? "wss" : "ws") +
@@ -44,5 +56,5 @@ form.addEventListener("submit", async (event) => {
 	if ((await connection.getTransport()) !== "/epoxy/index.mjs") {
 		await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
 	}
-	frame.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+	frame.src = scramjet.encodeUrl(url);
 });
