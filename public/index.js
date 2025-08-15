@@ -20,15 +20,16 @@ const error = document.getElementById("sj-error");
  */
 const errorCode = document.getElementById("sj-error-code");
 
+const { ScramjetController } = $scramjetLoadController();
+
 const scramjet = new ScramjetController({
 	files: {
-		wasm: "/scram/scramjet.wasm.wasm",
-		worker: "/scram/scramjet.worker.js",
-		client: "/scram/scramjet.client.js",
-		shared: "/scram/scramjet.shared.js",
-		sync: "/scram/scramjet.sync.js",
+		wasm: '/scram/scramjet.wasm.wasm',
+		all: '/scram/scramjet.all.js',
+		sync: '/scram/scramjet.sync.js',
 	},
 });
+
 scramjet.init();
 
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
@@ -56,5 +57,6 @@ form.addEventListener("submit", async (event) => {
 	if ((await connection.getTransport()) !== "/epoxy/index.mjs") {
 		await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
 	}
-	frame.src = scramjet.encodeUrl(url);
+	const sjEncode = scramjet.encodeUrl.bind(scramjet);
+	frame.src = sjEncode(url);
 });

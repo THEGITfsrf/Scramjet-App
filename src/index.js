@@ -1,16 +1,32 @@
 import { createServer } from "node:http";
 import { fileURLToPath } from "url";
 import { hostname } from "node:os";
-import wisp from "wisp-server-node";
+import { dirname, join } from "path";
+import { createRequire } from "module";
+import { server as wisp, logging } from "@mercuryworkshop/wisp-js/server";
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 
-// static paths
-import { scramjetPath } from "@mercuryworkshop/scramjet"
+const require = createRequire(import.meta.url);
+
+const scramjetDistPath = join(
+  dirname(require.resolve("@mercuryworkshop/scramjet/package.json")),
+  "dist"
+);
+
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 
 const publicPath = fileURLToPath(new URL("../public/", import.meta.url));
+
+// Wisp Configuration: Refer to the documentation at https://www.npmjs.com/package/@mercuryworkshop/wisp-js
+
+logging.set_level(logging.NONE);
+Object.assign(wisp.options, {
+  allow_udp_streams: false,
+  hostname_blacklist: [/example\.com/],
+  dns_servers: ["1.1.1.3", "1.0.0.3"]
+});
 
 const fastify = Fastify({
 	serverFactory: (handler) => {
@@ -33,9 +49,9 @@ fastify.register(fastifyStatic, {
 });
 
 fastify.register(fastifyStatic, {
-	root: scramjetPath,
-	prefix: "/scram/",
-	decorateReply: false,
+  root: scramjetDistPath,
+  prefix: "/scram/",
+  decorateReply: false,
 });
 
 fastify.register(fastifyStatic, {
