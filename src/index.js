@@ -1,16 +1,11 @@
 import { createServer } from "node:http";
 import { fileURLToPath } from "url";
 import { hostname } from "node:os";
-import { dirname, join } from "path";
-import { createRequire } from "module";
 import { server as wisp, logging } from "@mercuryworkshop/wisp-js/server";
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 
-const require = createRequire(import.meta.url);
-
-const scramjetDistPath = dirname(require.resolve("@mercuryworkshop/scramjet/bundled"));
-
+import { scramjetPath } from "@mercuryworkshop/scramjet/path";
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 
@@ -46,7 +41,7 @@ fastify.register(fastifyStatic, {
 });
 
 fastify.register(fastifyStatic, {
-  root: scramjetDistPath,
+  root: scramjetPath,
   prefix: "/scram/",
   decorateReply: false,
 });
