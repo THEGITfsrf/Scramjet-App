@@ -9,10 +9,7 @@ import fastifyStatic from "@fastify/static";
 
 const require = createRequire(import.meta.url);
 
-const scramjetDistPath = join(
-  dirname(require.resolve("@mercuryworkshop/scramjet/package.json")),
-  "dist"
-);
+const scramjetDistPath = dirname(require.resolve("@mercuryworkshop/scramjet/bundled"));
 
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
