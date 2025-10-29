@@ -2,11 +2,11 @@
 
 <h1 align="center">Scramjet Demo</h1>
 
-The demo implementation of Scramjet, the most advanced web proxy.
+The demo implementation of <a href="https://github.com/MercuryWorkshop/scramjet">Scramjet</a>, the most advanced web proxy.
 
-Scramjet is an experimental interception based web proxy designed with security, developer friendliness, and performance in mind. This project is made to evade internet censorship and bypass arbitrary web browser restrictions.
+<a href="https://github.com/MercuryWorkshop/scramjet">Scramjet</a> is an experimental interception based web proxy designed with security, developer friendliness, and performance in mind. This project is made to evade internet censorship and bypass arbitrary web browser restrictions.
 
-### Scramjet upstream is NOW frozen. Please do not make PRs to this repository. Refer to <a href="https://github.com/HeyPuter/browser.js">browser.js</a> where this project will now receive updates outside of just bypassing internet censorship.
+#### Refer to <a href="https://github.com/HeyPuter/browser.js">browser.js</a> where this project will now receive updates outside of just bypassing internet censorship.
 
 ## Supported Sites
 
@@ -25,6 +25,25 @@ Ensure you are not hosting on a datacenter IP for CAPTCHAs to work reliably alon
 
 ## Setup / Usage
 
+You will need Node.js 20.x and Git installed; below is an example for Debian/Ubuntu setup.
+
+```
+sudo apt update
+sudo apt upgrade
+sudo apt install curl git nginx
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+nvm install 20
+nvm use 20
+
+git clone https://github.com/MercuryWorkshop/Scramjet-App
+cd Scramjet-App
+```
+
 Install dependencies
 ```
 pnpm install
@@ -34,6 +53,13 @@ Run the server
 ```
 pnpm start
 ```
+
+Resources for self-hosting:
+
+- https://github.com/nvm-sh/nvm
+- https://docs.titaniumnetwork.org/guides/nginx/
+- https://docs.titaniumnetwork.org/guides/vps-hosting/
+- https://docs.titaniumnetwork.org/guides/dns-setup/
 
 ### HTTP Transport
 
