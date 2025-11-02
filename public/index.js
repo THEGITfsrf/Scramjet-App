@@ -47,8 +47,6 @@ form.addEventListener("submit", async (event) => {
 
 	const url = search(address.value, searchEngine.value);
 
-	let frame = document.getElementById("sj-frame");
-	frame.style.display = "block";
 	let wispUrl =
 		(location.protocol === "https:" ? "wss" : "ws") +
 		"://" +
@@ -57,6 +55,8 @@ form.addEventListener("submit", async (event) => {
 	if ((await connection.getTransport()) !== "/epoxy/index.mjs") {
 		await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
 	}
-	const sjEncode = scramjet.encodeUrl.bind(scramjet);
-	frame.src = sjEncode(url);
+  const frame = scramjet.createFrame();
+  frame.frame.id = "sj-frame";
+	document.body.appendChild(frame.frame);	
+	frame.go(url);
 });
