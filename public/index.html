@@ -13,67 +13,119 @@
 	<script src="index.js" defer></script>
 
 	<style>
+		:root {
+			--bg: #111;
+			--fg: #eee;
+			--bar: #1c1c1c;
+			--tab: #2a2a2a;
+			--active: #3b82f6;
+		}
+
+		[data-theme="light"] {
+			--bg: #f5f5f5;
+			--fg: #111;
+			--bar: #ffffff;
+			--tab: #ddd;
+		}
+
 		body {
 			margin: 0;
-			background: #111;
-			color: #eee;
-			font-family: sans-serif;
+			background: var(--bg);
+			color: var(--fg);
+			font-family: system-ui, sans-serif;
 		}
 
-		#browser-bar {
+		#ui {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 1000;
+			background: var(--bar);
+		}
+
+		#tabs {
 			display: flex;
-			gap: 8px;
-			padding: 10px;
-			background: #1c1c1c;
-			border-bottom: 1px solid #333;
+			gap: 6px;
+			padding: 6px;
+			overflow-x: auto;
 		}
 
-		#sj-address {
-			flex: 1;
-			padding: 10px;
-			font-size: 16px;
-			border-radius: 6px;
-			border: none;
-			outline: none;
-			background: #2a2a2a;
-			color: #fff;
-		}
-
-		button {
-			padding: 10px 16px;
-			font-size: 16px;
-			border: none;
-			border-radius: 6px;
+		.tab {
+			padding: 6px 12px;
+			background: var(--tab);
+			border-radius: 8px;
 			cursor: pointer;
-			background: #3b82f6;
+			white-space: nowrap;
+		}
+
+		.tab.active {
+			background: var(--active);
 			color: white;
 		}
 
-		button:hover {
-			background: #2563eb;
+		#bar {
+			display: flex;
+			gap: 6px;
+			padding: 8px;
+		}
+
+		input {
+			flex: 1;
+			padding: 10px;
+			border-radius: 6px;
+			border: none;
+			background: #2a2a2a;
+			color: white;
+		}
+
+		button {
+			padding: 10px 14px;
+			border-radius: 6px;
+			border: none;
+			cursor: pointer;
+			background: var(--active);
+			color: white;
+		}
+
+		iframe {
+			position: absolute;
+			top: 96px;
+			left: 0;
+			width: 100vw;
+			height: calc(100vh - 96px);
+			border: none;
+			display: none;
+		}
+
+		iframe.active {
+			display: block;
+		}
+
+		@media (max-width: 600px) {
+			#tabs {
+				display: none;
+			}
 		}
 	</style>
 </head>
 
-<body>
-	<form id="sj-form">
-		<div id="browser-bar">
-			<input
-				id="sj-search-engine"
-				type="hidden"
-				value="https://www.google.com/search?q=%s"
-			/>
-			<input
-				id="sj-address"
-				type="text"
-				placeholder="Search or enter address"
-				autocomplete="off"
-			/>
-			<button type="submit">Go</button>
-		</div>
-	</form>
+<body data-theme="dark">
+	<div id="ui">
+		<div id="tabs"></div>
 
-	<p id="sj-error"></p>
-	<pre id="sj-error-code"></pre>
+		<form id="sj-form" id="bar">
+			<input id="sj-search-engine" type="hidden"
+				value="https://www.google.com/search?q=%s" />
+
+			<button type="button" id="back">←</button>
+			<button type="button" id="forward">→</button>
+
+			<input id="sj-address" placeholder="Search or URL" />
+			<button type="submit">Go</button>
+			<button type="button" id="new-tab">+</button>
+			<button type="button" id="theme">🌓</button>
+		</form>
+	</div>
 </body>
 </html>
