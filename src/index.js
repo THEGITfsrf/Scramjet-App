@@ -4,7 +4,44 @@ import { hostname } from "node:os";
 import { server as wisp, logging } from "@mercuryworkshop/wisp-js/server";
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
+import fastifyBasicAuth from "@fastify/basic-auth";
+import dotenv from "dotenv";
+import rateLimit from "@fastify/rate-limit";
 
+await fastify.register(rateLimit, {
+    max: 30,                 // 5 requests...
+    timeWindow: "1 minute", // ...per minute per IP
+    ban: 5,                // optional: ban IP after 10 violations
+    allowList: [],          // you can add your own IP here to bypass limits
+    errorResponseBuilder: function (req, context) {
+        return {
+            statusCode: 429,
+            error: "Too Many Requests",
+            message: "Slow down."
+        };
+    }
+});
+
+dotenv.config();
+
+await fastify.register(fastifyBasicAuth, {
+    validate(username, password, req, reply, done) {
+        const USER = process.env.PROXY_USER;
+        const PASS = process.env.PROXY_PASS;
+
+        if (username === USER && password === PASS) {
+            done();
+        } else {
+            done(new Error("Unauthorized"));
+        }
+    },
+    authenticate: true
+});
+
+fastify.addHook("onRequest", fastify.basicAuth);
+
+
+fastify.addHook("onRequest", fastify.basicAuth);
 import { scramjetPath } from "@mercuryworkshop/scramjet/path";
 import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
