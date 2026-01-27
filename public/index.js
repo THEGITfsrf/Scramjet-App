@@ -77,6 +77,12 @@ form.addEventListener("submit", async (event) => {
 	                width: 100%;
 	                height: 100%;
 	            }
+	            iframe, #sj-frame {
+	                width: 100%;
+	                height: 100%;
+	                border: none;
+	                display: block;
+	            }
 	        </style>
 	    </head>
 	    <body>
@@ -95,4 +101,5 @@ form.addEventListener("submit", async (event) => {
 	
 	// Navigate through Scramjet
 	frame.go(url);
+
 });
