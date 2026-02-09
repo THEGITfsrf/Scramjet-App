@@ -7,6 +7,7 @@ import fastifyStatic from "@fastify/static";
 import fastifyBasicAuth from "@fastify/basic-auth";
 import dotenv from "dotenv";
 import rateLimit from "@fastify/rate-limit";
+import fastifyCors from "@fastify/cors";
 dotenv.config();
 
 import { scramjetPath } from "@mercuryworkshop/scramjet/path";
@@ -51,7 +52,20 @@ await fastify.register(rateLimit, {
         };
     }
 });
+await fastify.register(fastifyCors, {
+  origin: (origin, cb) => {
+    // Allow only your target site and subdomains
+    // Example: allow example.com and *.example.com
+    const allowedHost = /\.?pythonanywhere\.com$/i; // regex: optional subdomain + example.com
 
+    if (!origin || allowedHost.test(new URL(origin).hostname)) {
+      cb(null, true); // allow CORS
+    } else {
+      cb(null, false); // block CORS
+    }
+  },
+  credentials: true, // if you need cookies / auth headers
+});
 
 
 await fastify.register(fastifyBasicAuth, {
