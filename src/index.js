@@ -72,27 +72,34 @@ const fastify = Fastify({
 	},
 });
 
+const basePrefix = "/uidfhsuid";
+
+// Public files
 fastify.register(fastifyStatic, {
-	root: publicPath,
-	decorateReply: true,
+    root: publicPath,
+    decorateReply: true,
+    prefix: `${basePrefix}/`,  // <- Add this
 });
 
+// Scramjet
 fastify.register(fastifyStatic, {
-	root: scramjetPath,
-	prefix: "/scram/",
-	decorateReply: false,
+    root: scramjetPath,
+    prefix: `${basePrefix}/scram/`,
+    decorateReply: false,
 });
 
+// Libcurl
 fastify.register(fastifyStatic, {
-	root: libcurlPath,
-	prefix: "/libcurl/",
-	decorateReply: false,
+    root: libcurlPath,
+    prefix: `${basePrefix}/libcurl/`,
+    decorateReply: false,
 });
 
+// Baremux
 fastify.register(fastifyStatic, {
-	root: baremuxPath,
-	prefix: "/baremux/",
-	decorateReply: false,
+    root: baremuxPath,
+    prefix: `${basePrefix}/baremux/`,
+    decorateReply: false,
 });
 
 fastify.setNotFoundHandler((res, reply) => {
