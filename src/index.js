@@ -117,8 +117,17 @@ fastify.register(fastifyStatic, {
   root: baremuxPath,
   prefix: `/baremux/`,
   decorateReply: false,
-  setHeaders: SameOriginHeaders,
+  setHeaders: (res, path) => {
+    // Only worker.js needs same-origin policy
+    if (path.endsWith("worker.js")) {
+      res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+    } else {
+      res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+    }
+    res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  },
 });
+
 
 // 404 handler
 fastify.setNotFoundHandler((res, reply) => {
