@@ -72,7 +72,16 @@ await fastify.register(fastifyBasicAuth, {
   },
   authenticate: true,
 });
-fastify.addHook("onRequest", fastify.basicAuth);
+fastify.addHook("onRequest", (req, reply, done) => {
+  // 🔓 Allow service worker files without auth
+  if (req.raw.url?.endsWith("sw.js")) {
+    return done();
+  }
+
+  // 🔐 Everything else requires auth
+  fastify.basicAuth(req, reply, done);
+});
+
 
 const basePrefix = "/uidfhsuid";
 
