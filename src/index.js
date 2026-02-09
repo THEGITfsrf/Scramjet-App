@@ -98,21 +98,21 @@ fastify.register(fastifyStatic, {
 // Scramjet
 fastify.register(fastifyStatic, {
     root: scramjetPath,
-    prefix: `${basePrefix}/scram/`,
+    prefix: `/scram/`,
     decorateReply: false,
 });
 
 // Libcurl
 fastify.register(fastifyStatic, {
     root: libcurlPath,
-    prefix: `${basePrefix}/libcurl/`,
+    prefix: `/libcurl/`,
     decorateReply: false,
 });
 
 // Baremux
 fastify.register(fastifyStatic, {
     root: baremuxPath,
-    prefix: `${basePrefix}/baremux/`,
+    prefix: `/baremux/`,
     decorateReply: false,
 });
 
