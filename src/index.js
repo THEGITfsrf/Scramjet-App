@@ -72,9 +72,18 @@ await fastify.register(fastifyBasicAuth, {
   },
   authenticate: true,
 });
+const staticPrefixes = [
+  '/uidfhsuid/',
+  '/scram/',
+  '/libcurl/',
+  '/baremux/'
+];
+
 fastify.addHook("onRequest", (req, reply, done) => {
-  // 🔓 Allow service worker files without auth
-  if (req.raw.url?.endsWith("sw.js")) {
+  const url = req.raw.url || "";
+
+  // 🔓 Allow service worker scripts or any static files
+  if (url.endsWith("sw.js") || staticPrefixes.some(p => url.startsWith(p))) {
     return done();
   }
 
