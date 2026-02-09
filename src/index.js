@@ -75,7 +75,8 @@ const basePrefix = "/uidfhsuid";
 
 // Helper to set CORP headers for static files
 function setCORPHeader(res) {
-  res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin"); // <- allow SW to fetch
+    res.setHeader("Cross-Origin-Embedder-Policy", "require-corp"); // <- COEP
 }
 
 // Public files
