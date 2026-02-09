@@ -4,8 +4,8 @@
   "description": "The demo application for Scramjet, a high-performance web proxy.",
   "type": "module",
   "engines": {
-    "npm": ">=7.0.0",
-    "node": ">=16.0.0"
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
   },
   "scripts": {
     "start": "node src/index.js",
@@ -19,7 +19,6 @@
   "author": "Mercury Workshop",
   "license": "GNU AFFERO",
   "dependencies": {
-    "": "link:/",
     "@fastify/basic-auth": "^5.0.0",
     "@fastify/rate-limit": "^10.3.0",
     "@fastify/static": "^8.2.0",
