@@ -57,49 +57,8 @@ form.addEventListener("submit", async (event) => {
 			{ websocket: wispUrl },
 		]);
 	}
-	// Open a new blank tab
-	const win = window.open("about:blank", "_blank");
-	
-	// Build a minimal HTML shell
-	win.document.write(`
-	    <!doctype html>
-	    <html>
-	    <head>
-	        <title>Scramjet Proxy</title>
-	        <style>
-	            html, body {
-	                margin: 0;
-	                padding: 0;
-	                height: 100%;
-	                overflow: hidden;
-	            }
-	            #container {
-	                width: 100%;
-	                height: 100%;
-	            }
-	            iframe, #sj-frame {
-	                width: 100%;
-	                height: 100%;
-	                border: none;
-	                display: block;
-	            }
-	        </style>
-	    </head>
-	    <body>
-	        <div id="container"></div>
-	    </body>
-	    </html>
-	`);
-	win.document.close();
-	
-	// Create Scramjet frame
 	const frame = scramjet.createFrame();
 	frame.frame.id = "sj-frame";
-	
-	// Append Scramjet frame into the new tab
-	win.document.getElementById("container").appendChild(frame.frame);
-	
-	// Navigate through Scramjet
+	document.body.appendChild(frame.frame);
 	frame.go(url);
-
 });
