@@ -8,6 +8,7 @@ import fastifyBasicAuth from "@fastify/basic-auth";
 import dotenv from "dotenv";
 import rateLimit from "@fastify/rate-limit";
 import fastifyCors from "@fastify/cors";
+
 dotenv.config();
 
 import { scramjetPath } from "@mercuryworkshop/scramjet/path";
@@ -27,6 +28,7 @@ const fastify = Fastify({
   serverFactory: (handler) => {
     return createServer()
       .on("request", (req, res) => {
+        // COEP + COOP headers for SharedArrayBuffer / worker safety
         res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
         res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
         handler(req, res);
@@ -38,18 +40,19 @@ const fastify = Fastify({
   },
 });
 
+// Rate limiting
 await fastify.register(rateLimit, {
   max: 30,
   timeWindow: "1 minute",
   ban: 5,
-  allowList: [],
-  errorResponseBuilder: (req, context) => ({
+  errorResponseBuilder: () => ({
     statusCode: 429,
     error: "Too Many Requests",
     message: "Slow down.",
   }),
 });
 
+// CORS: allow only PythonAnywhere origin
 await fastify.register(fastifyCors, {
   origin: (origin, cb) => {
     const allowedHost = /\.?pythonanywhere\.com$/i;
@@ -59,6 +62,7 @@ await fastify.register(fastifyCors, {
   credentials: true,
 });
 
+// Basic Auth
 await fastify.register(fastifyBasicAuth, {
   validate(username, password, req, reply, done) {
     const USER = process.env.PROXY_USER;
@@ -68,53 +72,60 @@ await fastify.register(fastifyBasicAuth, {
   },
   authenticate: true,
 });
-
 fastify.addHook("onRequest", fastify.basicAuth);
 
 const basePrefix = "/uidfhsuid";
 
-// Helper to set CORP headers for static files
-function setCORPHeader(res) {
-    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin"); // <- allow SW to fetch
-    res.setHeader("Cross-Origin-Embedder-Policy", "require-corp"); // <- COEP
+// Helper to set headers for service worker files
+function SWHeaders(res) {
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin"); // SW scripts must be cross-origin
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
 }
 
-// Public files
+// Helper to set headers for same-origin static files (workers, modules)
+function SameOriginHeaders(res) {
+  res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+}
+
+// Public files (including SW scripts)
 fastify.register(fastifyStatic, {
   root: publicPath,
   decorateReply: true,
   prefix: `${basePrefix}/`,
-  setHeaders: setCORPHeader,
+  setHeaders: SWHeaders,
 });
 
-// Scramjet
+// Scramjet JS
 fastify.register(fastifyStatic, {
   root: scramjetPath,
   prefix: `/scram/`,
   decorateReply: false,
-  setHeaders: setCORPHeader,
+  setHeaders: SameOriginHeaders,
 });
 
-// Libcurl
+// Libcurl JS
 fastify.register(fastifyStatic, {
   root: libcurlPath,
   prefix: `/libcurl/`,
   decorateReply: false,
-  setHeaders: setCORPHeader,
+  setHeaders: SameOriginHeaders,
 });
 
-// Baremux
+// Baremux JS + workers
 fastify.register(fastifyStatic, {
   root: baremuxPath,
   prefix: `/baremux/`,
   decorateReply: false,
-  setHeaders: setCORPHeader,
+  setHeaders: SameOriginHeaders,
 });
 
+// 404 handler
 fastify.setNotFoundHandler((res, reply) => {
   return reply.code(404).type("text/html").sendFile("404.html");
 });
 
+// Listening logs
 fastify.server.on("listening", () => {
   const address = fastify.server.address();
   console.log("Listening on:");
@@ -125,19 +136,16 @@ fastify.server.on("listening", () => {
   );
 });
 
+// Shutdown handling
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
-
 function shutdown() {
   console.log("SIGTERM signal received: closing HTTP server");
   fastify.close();
   process.exit(0);
 }
 
+// Listen
 let port = parseInt(process.env.PORT || "");
 if (isNaN(port)) port = 8080;
-
-fastify.listen({
-  port: port,
-  host: "0.0.0.0",
-});
+fastify.listen({ port, host: "0.0.0.0" });
