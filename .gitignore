@@ -1,3 +1,4 @@
 node_modules
 .DS_Store
-scramjet/
+scramjet/"node_modules/" 
+".pnpm-store/" 
